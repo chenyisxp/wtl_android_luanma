@@ -2,20 +2,28 @@ package com.wtl;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
+
+import com.video.CustomVideoView;
 
 public class SplashActivity extends Activity{
-	 private static final int sleepTime = 3000;
-	  public void onCreate(Bundle arg0) {
-		  final View view = View.inflate(this, R.layout.activity_splash, null);  
-         setContentView(view);  
-         Log.v("btnbtnididi", "11111111");
-         super.onCreate(arg0);  
-	  }
-	  protected void onStart(){
-		  super.onStart();
+	 private static final int sleepTime = 4000;
+	 private CustomVideoView mVideoView;
+	    @Override
+	    protected void onCreate(Bundle savedInstanceState) {
+	        super.onCreate(savedInstanceState);
+	        setContentView(R.layout.activity_splash);
+//	        ViewUtils.inject(this);
+	        mVideoView = (CustomVideoView) findViewById(R.id.welcome_videoview);
+	        //读取视频资源
+	        mVideoView.setVideoURI(Uri.parse("android.resource://" + this.getPackageName() + "/" + R.raw.app_open));
+	        //播放视频
+	        mVideoView.start();
+	        Treed();
+	    }
+	public void Treed(){
+	    
 		  new Thread(new Runnable() { 
 		      public void run() {    
 		        long start = System.currentTimeMillis(); 
@@ -31,5 +39,6 @@ public class SplashActivity extends Activity{
 		          finish(); 
 		      } 
 		    }).start(); 
-	  }
+	}
+	  
 }

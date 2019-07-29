@@ -215,13 +215,15 @@ public class MainActivity extends Activity{
 			initTimer();
 			//webview
 		   mWebView = (WebView) findViewById(R.id.webView);
-		    mWebView.loadUrl("http://192.168.1.4:8083/#/");
-//		   mWebView.loadUrl("file:///android_asset/index.html");
+//		    mWebView.loadUrl("http://192.168.1.2:8082/#/");
+		   mWebView.loadUrl("file:///android_asset/index.html");
 		    
 		    WebSettings webSettings = mWebView.getSettings();
 		    webSettings.setJavaScriptEnabled(true);
 		    webSettings.setDefaultTextEncodingName("gbk");//设置编码格式
 		    mWebView.addJavascriptInterface(jsInteration, "android");
+		    //避免字体大小随系统变化
+		    mWebView.getSettings().setTextZoom(100);
 		    mWebView.setWebViewClient(new WebViewClient() {
 		        @Override
 		        public boolean shouldOverrideUrlLoading(WebView view, String url) {
