@@ -1,5 +1,6 @@
 package com.wtl;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothManager;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
+import android.bluetooth.le.ScanResult;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentValues;
@@ -33,7 +35,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.location.LocationManager;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -41,12 +42,10 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.util.Log;
-import android.view.Display;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
 import android.webkit.ValueCallback;
@@ -60,11 +59,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.karics.library.zxing.android.CaptureActivity;
-import com.wtl.NetUtils.netType;
 import com.wtl.bean.BleListBean;
 import com.wtl.bean.BleRespBean;
 import com.wtl.bean.BleTooLongBean;
@@ -89,8 +88,7 @@ import com.wtl.util.CRC16M;
  * @data: 2018-10-16 上午10:28:18
  * @version: V1.0
  */
-public class MainActivity extends Activity{
-	public static  String netWorkStatus ="Online";
+public class Copy_20210716modbus_of_MainActivity extends Activity{
 	private static final int REQUEST_CODE_SCAN = 0x0000;//扫锟斤拷
 	/**
 	 * 1、校验数据的当前状态
@@ -215,62 +213,10 @@ public class MainActivity extends Activity{
 		}
 
 	};
-//	手机网络变化跟着变
-	   private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-	        @Override
-	        public void onReceive(Context context, Intent intent) {
-	            boolean networkConnected = NetUtils.isNetworkConnected(getApplicationContext());
-	            Log.d(TAG, "判断是否有网络连接--->" + networkConnected);
 
-	            boolean wifiConnected = NetUtils.isWifiConnected(getApplicationContext());
-	            Log.d(TAG, "判断WIFI网络是否可用--->" + wifiConnected);
-
-	            boolean mobileConnected = NetUtils.isMobileConnected(getApplicationContext());
-	            Log.d(TAG, "判断MOBILE网络是否可用--->" + mobileConnected);
-
-	            int connectedType = NetUtils.getConnectedType(getApplicationContext());
-	            Log.d(TAG, "获取当前网络连接的类型信息--->" + connectedType);
-
-//	           0 4g 1 wifi  -1 没网络
-	            switch (connectedType) {
-	                case -1:
-	                    Log.d(TAG, "获取当前的网络状态--->没有网络");
-	                    netWorkStatus="Offline";
-	                    break;
-	                case 0:
-	                    Log.d(TAG, "获取当前的网络状态--->没有网络");
-	                    netWorkStatus="Online_4g";
-	                    break;
-	                case 1:
-	                	netWorkStatus="Online_wifi";
-	                    Log.d(TAG, "获取当前的网络状态--->WIFI网络");
-	                    break;
-	                case 2:
-	                	netWorkStatus="Online_wap";
-	                    Log.d(TAG, "获取当前的网络状态--->网络");
-	                    break;
-	                case 3:
-	                	netWorkStatus="Online_net";
-	                    Log.d(TAG, "获取当前的网络状态--->net网络");
-	                    break;
-	                default:
-	                	netWorkStatus="Online_unname";
-	            }
-	            mWebView.post(new Runnable() {
-				    public void run() {
-				    	mWebView.loadUrl("javascript:sendToHtmlNetState('" + netWorkStatus +"')");
-				    }}
-	            );
-	        }
-	    };
-	    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		   // 这个广播可以写在BaseActivity中，这里做测试
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(broadcastReceiver, intentFilter);
 		setContentView(R.layout.activity_html);
 		//初始化隐藏按钮
 		test_btn = (Button) this.findViewById(R.id.scan_dev_btn);
@@ -314,62 +260,8 @@ public class MainActivity extends Activity{
 		    });  
 		    //配置完成 js弹窗等操作
 		    mWebView.setWebChromeClient(new WebChromeClient());
-		 // 开启支持localstorage
-		    mWebView.getSettings().setDomStorageEnabled(true);
-//		    mWebView.getSettings().setAppCacheMaxSize(1024*1024*8);
-		    String appCachePath = getApplicationContext().getCacheDir().getAbsolutePath();
-		    mWebView.getSettings().setAppCachePath(appCachePath);
-		    mWebView.getSettings().setAllowFileAccess(true);
-		    mWebView.getSettings().setAppCacheEnabled(true);
 		    //清除缓存
 		    webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
-		    Log.e(TAG, "MANUFACTURER=" + Build.MANUFACTURER);
-
-		    Log.e(TAG, "BRAND=" + Build.BRAND);
-
-		    Log.e(TAG, "MODEL=" + Build.MODEL);
-
-		    Log.e(TAG, "VERSION.RELEASE=" + Build.VERSION.RELEASE);
-
-		    Log.e(TAG, "VERSION.SDK_INT=" + Build.VERSION.SDK_INT);
-
-		    Log.e(TAG, "DEVICE=" + Build.DEVICE);
-
-		    Log.e(TAG, "HOST=" + Build.HOST);
-
-		    Log.e(TAG, "ID=" + Build.ID);
-
-		    Log.e(TAG, "TIME=" + Build.TIME);
-
-		    Log.e(TAG, "TYPE=" + Build.TYPE);
-
-		    Log.e(TAG, "PRODUCT=" + Build.PRODUCT);
-
-		    Log.e(TAG, "BOARD=" + Build.BOARD);
-
-		    Log.e(TAG, "DISPLAY=" + Build.DISPLAY);
-
-		    Log.e(TAG, "FINGERPRINT=" + Build.FINGERPRINT);
-
-		    Log.e(TAG, "HARDWARE=" + Build.HARDWARE);
-
-		    Log.e(TAG, "BOOTLOADER=" + Build.BOOTLOADER);
-
-		    Log.e(TAG, "TAGS=" + Build.TAGS);
-
-		    Log.e(TAG, "UNKNOWN=" + Build.UNKNOWN);
-
-		    Log.e(TAG, "USER=" + Build.USER);
-		    Display display = getWindowManager().getDefaultDisplay();
-		    int width = display.getWidth();
-		    int height = display.getHeight();
-		    Log.d(TAG, "width = " + width + ",height = " + height);
-		    WindowManager wm = (WindowManager) this
-		    		.getSystemService(Context.WINDOW_SERVICE); 
-		    		int width1 = wm.getDefaultDisplay().getWidth(); 
-		    		int height1 = wm.getDefaultDisplay().getHeight(); 
-		    		Log.d(TAG, "width = " + width1 + ",height1 = " + height1);
-		    		
 	}
 	private static void initTimer(){
 		task = new TimerTask() { 
@@ -844,7 +736,6 @@ public class MainActivity extends Activity{
 					//原来安卓里处理的逻辑（废弃）
 //					commonBleRespData(bleRespInfo.replaceAll(" ", "").toUpperCase());
 					//modbus
-					Log.i("=============", bleRespInfo);
 					mWebView.post(new Runnable() {
 					    @Override
 					    public void run() {
@@ -1268,14 +1159,6 @@ public class MainActivity extends Activity{
 				return data;
 			}
 	public class JsInteration {
-			/**
-			 * 查询网络状态
-			 * @return
-			 */
-			@JavascriptInterface
-			public String getAndroidNetStatus() {
-				return netWorkStatus;
-			}
 			//记录一些操作及配置
 		 	@JavascriptInterface
 		    public void saveKeyStorage(String key,String value) {
@@ -1897,7 +1780,7 @@ public class MainActivity extends Activity{
 	 */
 	
 	private void startCameraScanner(){
-		Intent intent = new Intent(MainActivity.this,
+		Intent intent = new Intent(Copy_20210716modbus_of_MainActivity.this,
 				CaptureActivity.class);
 		startActivityForResult(intent, REQUEST_CODE_SCAN);
 	}
