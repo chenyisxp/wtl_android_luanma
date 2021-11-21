@@ -848,7 +848,7 @@ public class MainActivity extends Activity{
 					mWebView.post(new Runnable() {
 					    @Override
 					    public void run() {
-					    	mWebView.loadUrl("javascript:modbusBroastFromApp('" + bleRespInfo.replaceAll(" ", "").toUpperCase() +"')");
+					    	mWebView.loadUrl("javascript:andriodModbusBleDataLayoutFuc('" + bleRespInfo.replaceAll(" ", "").toUpperCase() +"')");
 					    
 					}});
 				}
