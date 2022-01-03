@@ -216,53 +216,54 @@ public class MainActivity extends Activity{
 
 	};
 //	手机网络变化跟着变
-	   private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-	        @Override
-	        public void onReceive(Context context, Intent intent) {
-	            boolean networkConnected = NetUtils.isNetworkConnected(getApplicationContext());
-	            Log.d(TAG, "判断是否有网络连接--->" + networkConnected);
-
-	            boolean wifiConnected = NetUtils.isWifiConnected(getApplicationContext());
-	            Log.d(TAG, "判断WIFI网络是否可用--->" + wifiConnected);
-
-	            boolean mobileConnected = NetUtils.isMobileConnected(getApplicationContext());
-	            Log.d(TAG, "判断MOBILE网络是否可用--->" + mobileConnected);
-
-	            int connectedType = NetUtils.getConnectedType(getApplicationContext());
-	            Log.d(TAG, "获取当前网络连接的类型信息--->" + connectedType);
-
-//	           0 4g 1 wifi  -1 没网络
-	            switch (connectedType) {
-	                case -1:
-	                    Log.d(TAG, "获取当前的网络状态--->没有网络");
-	                    netWorkStatus="Offline";
-	                    break;
-	                case 0:
-	                    Log.d(TAG, "获取当前的网络状态--->没有网络");
-	                    netWorkStatus="Online_4g";
-	                    break;
-	                case 1:
-	                	netWorkStatus="Online_wifi";
-	                    Log.d(TAG, "获取当前的网络状态--->WIFI网络");
-	                    break;
-	                case 2:
-	                	netWorkStatus="Online_wap";
-	                    Log.d(TAG, "获取当前的网络状态--->网络");
-	                    break;
-	                case 3:
-	                	netWorkStatus="Online_net";
-	                    Log.d(TAG, "获取当前的网络状态--->net网络");
-	                    break;
-	                default:
-	                	netWorkStatus="Online_unname";
-	            }
-	            mWebView.post(new Runnable() {
-				    public void run() {
-				    	mWebView.loadUrl("javascript:sendToHtmlNetState('" + netWorkStatus +"')");
-				    }}
-	            );
-	        }
-	    };
+//	   private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+//	        @Override
+//	        public void onReceive(Context context, Intent intent) {
+//	        	Log.d("=============", "判断是否有网络连接--->");
+//	            boolean networkConnected = NetUtils.isNetworkConnected(getApplicationContext());
+//	            Log.d(TAG, "判断是否有网络连接--->" + networkConnected);
+//
+//	            boolean wifiConnected = NetUtils.isWifiConnected(getApplicationContext());
+//	            Log.d(TAG, "判断WIFI网络是否可用--->" + wifiConnected);
+//
+//	            boolean mobileConnected = NetUtils.isMobileConnected(getApplicationContext());
+//	            Log.d(TAG, "判断MOBILE网络是否可用--->" + mobileConnected);
+//
+//	            int connectedType = NetUtils.getConnectedType(getApplicationContext());
+//	            Log.d(TAG, "获取当前网络连接的类型信息--->" + connectedType);
+//
+////	           0 4g 1 wifi  -1 没网络
+//	            switch (connectedType) {
+//	                case -1:
+//	                    Log.d(TAG, "获取当前的网络状态--->没有网络");
+//	                    netWorkStatus="Offline";
+//	                    break;
+//	                case 0:
+//	                    Log.d(TAG, "获取当前的网络状态--->没有网络");
+//	                    netWorkStatus="Online_4g";
+//	                    break;
+//	                case 1:
+//	                	netWorkStatus="Online_wifi";
+//	                    Log.d(TAG, "获取当前的网络状态--->WIFI网络");
+//	                    break;
+//	                case 2:
+//	                	netWorkStatus="Online_wap";
+//	                    Log.d(TAG, "获取当前的网络状态--->网络");
+//	                    break;
+//	                case 3:
+//	                	netWorkStatus="Online_net";
+//	                    Log.d(TAG, "获取当前的网络状态--->net网络");
+//	                    break;
+//	                default:
+//	                	netWorkStatus="Online_unname";
+//	            }
+//	            mWebView.post(new Runnable() {
+//				    public void run() {
+//				    	mWebView.loadUrl("javascript:sendToHtmlNetState('" + netWorkStatus +"')");
+//				    }}
+//	            );
+//	        }
+//	    };
 	    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -270,7 +271,7 @@ public class MainActivity extends Activity{
 		   // 这个广播可以写在BaseActivity中，这里做测试
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        registerReceiver(broadcastReceiver, intentFilter);
+//        registerReceiver(broadcastReceiver, intentFilter);
 		setContentView(R.layout.activity_html);
 		//初始化隐藏按钮
 		test_btn = (Button) this.findViewById(R.id.scan_dev_btn);
@@ -484,7 +485,7 @@ public class MainActivity extends Activity{
 	 */
 	private void clickScan() {
 		// TODO Auto-generated method stub
-
+		Log.i("=============", scan_flag+"");
 		if (scan_flag) {
 //			mleDeviceListAdapter = new LeDeviceListAdapter();
 //			lv.setAdapter(mleDeviceListAdapter);
@@ -791,6 +792,7 @@ public class MainActivity extends Activity{
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			final String action = intent.getAction();
+			Log.i("=============", action+"");
 			if (BluetoothLeService.ACTION_GATT_CONNECTED.equals(action))// Gatt连接成功
 			{
 				mConnected = true;
@@ -822,6 +824,13 @@ public class MainActivity extends Activity{
 				// 获取设备的所有蓝牙服务
 				displayGattServices(mBluetoothLeService
 						.getSupportedGattServices());
+				//20211206
+				Log.i("=============", mConnected+"mConnected");
+				if(mConnected){
+					mConnected = true;
+					status = "connected";
+					connectBle();
+				}
 			} else if (BluetoothLeService.ACTION_DATA_AVAILABLE.equals(action))// 有效数据
 			{
 				// 处理发送过来的数据
@@ -845,6 +854,13 @@ public class MainActivity extends Activity{
 //					commonBleRespData(bleRespInfo.replaceAll(" ", "").toUpperCase());
 					//modbus
 					Log.i("=============", bleRespInfo);
+//					Log.i("bbbccc", data);
+//					mWebView.post(new Runnable() {
+//					    @Override
+//					    public void run() {
+//					    	mWebView.loadUrl("javascript:modbusBroastFromApp('" + bleRespInfo.replaceAll(" ", "").toUpperCase() +"')");
+//					    
+//					}});
 					mWebView.post(new Runnable() {
 					    @Override
 					    public void run() {
@@ -1167,7 +1183,7 @@ public class MainActivity extends Activity{
 				charas.add(gattCharacteristic);
 				HashMap<String, String> currentCharaData = new HashMap<String, String>();
 				uuid = gattCharacteristic.getUuid().toString();
-
+				Log.i("=============","uuid:"+uuid);
 				if (gattCharacteristic.getUuid().toString()
 						.equals(HEART_RATE_MEASUREMENT)) {
 					// 测试读取当前Characteristic数据，会触发mOnDataAvailable.onCharacteristicRead()
@@ -1342,6 +1358,7 @@ public class MainActivity extends Activity{
 		@JavascriptInterface
 		public void callSendDataToBle(String pageFrom,String data,String crcCode) {
 			String directive =data.substring(2,4);
+			Log.i("bbbccc", data);
 			//0、初始化 开始定时器
 			//20210717 调整至html5实施 modbus关闭
 //			if(!"FF".equals(directive)){//响应不需要开启定时器
@@ -1517,6 +1534,7 @@ public class MainActivity extends Activity{
 		 */
 		@JavascriptInterface
 		public String closeBleConnect() {
+//			close
 			//将连接状态置为未连接
 			status="disconnected";
 			return Constant.SUC_CODE;
@@ -1579,6 +1597,28 @@ public class MainActivity extends Activity{
 			mBluetoothLeService.writeCharacteristic(target_chara);
 			return "success";
 		}
+		/**
+		 *点击断开连接蓝牙
+		 * @return
+		 */
+		@JavascriptInterface
+		public void disconectAndroidBle() {
+			System.out.println("disconnect()");
+			 //1、先取消
+			 mBluetoothLeService.disconnect();
+			 target_chara=null;
+//			 2、关闭
+//			 mBluetoothLeService.close();
+			
+		}
+		
+		@JavascriptInterface
+		public void androidStopSCan(){
+			Log.i("Stop", "stoping................");
+			mScanning = false;
+			mBluetoothAdapter.stopLeScan(mLeScanCallback);
+			scan_flag = true;
+		}
 		
 		/**
 		 *点击连接蓝牙
@@ -1586,6 +1626,7 @@ public class MainActivity extends Activity{
 		 */
 		@JavascriptInterface
 		public void setBleConnect(String address) {
+			 scan_flag=false;//停止扫描 要不然扫描结果阻止了 连接
 //			 status="disconnected";//重置
 			 //1、先关闭
 //			 mBluetoothLeService.disconnect();
@@ -1594,6 +1635,7 @@ public class MainActivity extends Activity{
 			 clickScan();
 			 SCAN_PERIOD =8000;//1s
 			//2、再连接
+			 Log.i("=============",mScanning+ "stoping................");
 			if (mScanning)
 			{
 				/* 停止扫描设备 */

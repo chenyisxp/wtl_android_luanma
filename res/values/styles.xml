@@ -28,4 +28,5 @@
         <item name="android:background">@color/color_dark_grey</item>
     </style>
     <!-- Define the list items style end -->
+    
 </resources>

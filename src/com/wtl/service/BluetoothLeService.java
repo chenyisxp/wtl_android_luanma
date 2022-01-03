@@ -77,7 +77,7 @@ public class BluetoothLeService extends Service {
 	{
 		mOnDataAvailableListener = l;
 	}
-
+//	https://blog.csdn.net/qq_34224268/article/details/85252094
 	/* 连接远程设备的回调函数 */
 	private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback()
 	{
@@ -94,13 +94,19 @@ public class BluetoothLeService extends Service {
 				broadcastUpdate(intentAction);
 				Log.i(TAG, "Connected to GATT server.");
 				// Attempts to discover services after successful connection.
-				Log.i(TAG, "Attempting to start service discovery:"
-						+ mBluetoothGatt.discoverServices());
-
+//				Log.i(TAG, "Attempting to start service discovery:"
+//						+ );
+				if(mBluetoothGatt !=null){
+					mBluetoothGatt.discoverServices();
+				}
 			} else if (newState == BluetoothProfile.STATE_DISCONNECTED)//连接失败
 			{
 				intentAction = ACTION_GATT_DISCONNECTED;
 				mConnectionState = STATE_DISCONNECTED;
+//				20211206新增
+				mBluetoothGatt.close();
+	            mBluetoothGatt = null;
+//				20211206新增
 				Log.i(TAG, "Disconnected from GATT server.");
 				broadcastUpdate(intentAction);
 			}
@@ -354,9 +360,16 @@ public class BluetoothLeService extends Service {
 			Log.w(TAG, "Device not found.  Unable to connect.");
 			return false;
 		}
+		
 		// We want to directly connect to the device, so we are setting the
 		// autoConnect
 		// parameter to false.
+//		20211206
+		if(mBluetoothGatt != null)
+        {
+            mBluetoothGatt.close();
+            mBluetoothGatt = null;
+        }
 		/* 调用device中的connectGatt连接到远程设备 */
 		mBluetoothGatt = device.connectGatt(this, false, mGattCallback);
 		Log.d(TAG, "Trying to create a new connection.");
@@ -438,6 +451,7 @@ public class BluetoothLeService extends Service {
 			Log.w(TAG, "BluetoothAdapter not initialized");
 			return;
 		}
+		Log.i("=============",characteristic+ "characteristic................");
 		mBluetoothGatt.readCharacteristic(characteristic);
 
 	}
@@ -450,6 +464,7 @@ public class BluetoothLeService extends Service {
 			Log.w(TAG, "BluetoothAdapter not initialized");
 			return;
 		}
+		Log.i(TAG, characteristic+"sssssssssss");
 		mBluetoothGatt.writeCharacteristic(characteristic);
 
 	}
