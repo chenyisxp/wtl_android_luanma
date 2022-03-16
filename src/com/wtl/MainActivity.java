@@ -1337,8 +1337,9 @@ public class MainActivity extends Activity{
 		    }
 		
 		   @JavascriptInterface
-		    public void openWeb() {
-		    	Uri uri = Uri.parse("http://www.wtl.com.cn/");
+		    public void openWeb(String url) {
+			   
+		    	Uri uri = Uri.parse(url);
 //			    Uri uri = Uri.parse("http://www.grovers.ru/");
 		    	Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 		    	startActivity(intent);

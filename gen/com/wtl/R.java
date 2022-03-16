@@ -53,15 +53,16 @@ public final class R {
         public static final int hc=0x7f020006;
         public static final int ic_launcher=0x7f020007;
         public static final int login_app=0x7f020008;
-        public static final int scan_light=0x7f020009;
-        public static final int selector_capture_back=0x7f02000a;
-        public static final int selector_main_button=0x7f02000b;
-        public static final int shape_main_button=0x7f02000c;
-        public static final int shape_main_edit=0x7f02000d;
-        public static final int shape_main_imageview=0x7f02000e;
-        public static final int shape_main_title=0x7f02000f;
-        public static final int wtl=0x7f020010;
-        public static final int wtl01=0x7f020011;
+        public static final int parweld=0x7f020009;
+        public static final int scan_light=0x7f02000a;
+        public static final int selector_capture_back=0x7f02000b;
+        public static final int selector_main_button=0x7f02000c;
+        public static final int shape_main_button=0x7f02000d;
+        public static final int shape_main_edit=0x7f02000e;
+        public static final int shape_main_imageview=0x7f02000f;
+        public static final int shape_main_title=0x7f020010;
+        public static final int wtl=0x7f020011;
+        public static final int wtl01=0x7f020012;
     }
     public static final class id {
         public static final int capture_imageview_back=0x7f09001a;

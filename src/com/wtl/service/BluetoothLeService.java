@@ -85,6 +85,7 @@ public class BluetoothLeService extends Service {
 		public void onConnectionStateChange(BluetoothGatt gatt, int status,
 				int newState)
 		{
+			Log.i(TAG, "7777777777777777777:"+status);
 			String intentAction;
 			if (newState == BluetoothProfile.STATE_CONNECTED)//连接成功
 			{
